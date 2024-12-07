@@ -1,4 +1,5 @@
 <?php
+include_once __DIR__ .'/include/config.php';
 include_once __DIR__ .'/partials/header.php';
 ?>
 <h4 class="page-title">Make Deposit</h4>
