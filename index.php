@@ -1,3 +1,6 @@
+<?php
+include_once __DIR__ .'/partials/header.php';
+?>
 <h4 class="page-title">Make Deposit</h4>
 <div class="row">
     <div class="col-md-12">
@@ -369,3 +372,6 @@
         </form>
     </div>
 </div>
+<?php
+include_once __DIR__ .'/partials/header.php';
+?>
