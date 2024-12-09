@@ -85,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
 // Fetch available investment packages for selection
 $packages_sql = "SELECT * FROM packages";
 $packages_result = mysqli_query($stock_conn, $packages_sql);
+$page_name = 'Make Stock Deposit';
 ?>
 <?php include_once __DIR__ . '/partials/header.php'; ?>
 <div class="container my-5">
