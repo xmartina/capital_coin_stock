@@ -54,7 +54,7 @@
                                     <div class="u-img"><img src="../user-avatar.png" alt="user"></div>
                                     <div class="u-text">
                                         <h4>fad</h4>
-                                        <p class="text-muted">admin@dexa.com</p>
+                                        <p class="text-muted"><?=$user_email?></p>
                                         <a href="/?a=edit_account" class="btn btn-rounded btn-danger btn-sm">View Profile</a></div>
                                 </div>
                             </li>
