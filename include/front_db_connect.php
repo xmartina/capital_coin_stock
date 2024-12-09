@@ -2,8 +2,8 @@
 // config.php
 
 $servername = "localhost";
-$username = "multistream6_capital_coin_1";
-$password = "capital_coin_1";
+$username = "multistream6_capital_coin_user_2";
+$password = "capital_coin_user_2";
 $dbname = "multistream6_capital_coin_1";
 
 // Create connection
