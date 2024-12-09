@@ -86,52 +86,130 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
 $packages_sql = "SELECT * FROM packages";
 $packages_result = mysqli_query($stock_conn, $packages_sql);
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Deposit - Stock Investment</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<h2>Make a Deposit</h2>
-<?php
-if(isset($message)) {
-    echo "<p class='success'>$message</p>";
-}
-if(isset($error)) {
-    echo "<p class='error'>$error</p>";
-}
-?>
-<form method="POST" action="deposit.php">
-    <label for="package_id">Select Investment Package:</label><br>
-    <select name="package_id" id="package_id" required>
-        <option value="">--Select Package--</option>
-        <?php
-        if($packages_result && mysqli_num_rows($packages_result) > 0) {
-            while($package = mysqli_fetch_assoc($packages_result)) {
-                echo "<option value='" . htmlspecialchars($package['id']) . "'>" . htmlspecialchars($package['name']) . " - $" . number_format($package['min_amount'], 2) . " to $" . number_format($package['max_amount'], 2) . "</option>";
+<?php include_once __DIR__ . '/partials/header.php'; ?>
+<h4 class="page-title">Make a Deposit</h4>
+<div class="row">
+    <div class="col-md-12">
+
+        <!-- Begin Main Content -->
+        <div class="card">
+            <div class="card-body">
+                <?php
+                if(isset($message)) {
+                    echo "<p class='success'>" . $message . "</p>";
+                }
+                if(isset($error)) {
+                    echo "<p class='error'>" . $error . "</p>";
+                }
+                ?>
+
+                <form method="POST" action="deposit.php">
+
+                    <table cellspacing="1" cellpadding="2" border="0" width="100%" class="tab">
+                        <tbody>
+                        <tr>
+                            <td colspan="3">
+                                <label for="package_id"><b>Select Investment Package:</b></label><br>
+                                <select name="package_id" id="package_id" required>
+                                    <option value="">--Select Package--</option>
+                                    <?php
+                                    if($packages_result && mysqli_num_rows($packages_result) > 0) {
+                                        while($package = mysqli_fetch_assoc($packages_result)) {
+                                            echo "<option value='" . htmlspecialchars($package['id']) . "'>" . htmlspecialchars($package['name']) . " - $" . number_format($package['min_amount'], 2) . " to $" . number_format($package['max_amount'], 2) . "</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=''>No packages available</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <label for="deposit_method"><b>Select Cryptocurrency:</b></label><br>
+                                <select name="deposit_method" id="deposit_method" required>
+                                    <option value="">--Select Crypto--</option>
+                                    <option value="BTC">Bitcoin (BTC)</option>
+                                    <option value="ETH">Ethereum (ETH)</option>
+                                    <option value="USDT">Tether (USDT)</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <label for="investment_amount"><b>Investment Amount ($):</b></label><br>
+                                <input type="number" name="investment_amount" id="investment_amount" min="0" step="0.01" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <label for="deposit_txid"><b>Transaction ID (TXID):</b></label><br>
+                                <input type="text" name="deposit_txid" id="deposit_txid" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="right">
+                                <input type="submit" value="Submit Deposit" class="btn btn-primary">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+        <br><br>
+
+        <h3>Your Investments</h3>
+        <p>Username: <?= htmlspecialchars($username) ?></p>
+        <table border="1" cellpadding="10">
+            <tr>
+                <th>Plan</th>
+                <th>Investment Amount ($)</th>
+                <th>Profit (%)</th>
+                <th>Profit Earned ($)</th>
+                <th>Status</th>
+                <th>Admin Comments</th>
+            </tr>
+            <?php
+            // Fetch user's investments including status and admin comments
+            $investments_sql = "SELECT packages.name, packages.profit_percentage, investments.amount, investments.profit, investments.status, investments.admin_comments
+                FROM investments
+                JOIN packages ON investments.package_id = packages.id
+                WHERE investments.user_id = '$user_id'";
+            $investments_result = mysqli_query($stock_conn, $investments_sql);
+
+            if($investments_result && mysqli_num_rows($investments_result) > 0) {
+                $total = 0;
+                while($invest = mysqli_fetch_assoc($investments_result)) {
+                    $total += $invest['profit'];
+                    ?>
+                    <tr>
+                        <td><?= htmlspecialchars($invest['name']) ?></td>
+                        <td align="right"><?= number_format($invest['amount'], 2) ?></td>
+                        <td align="right"><?= number_format($invest['profit_percentage'], 2) ?></td>
+                        <td align="right"><?= number_format($invest['profit'], 2) ?></td>
+                        <td><?= ucfirst(htmlspecialchars($invest['status'])) ?></td>
+                        <td><?= htmlspecialchars($invest['admin_comments']) ?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                <tr>
+                    <td colspan="3" align="right"><strong>Total Profit Earned:</strong></td>
+                    <td align="right"><strong><?= number_format($total, 2) ?></strong></td>
+                    <td colspan="2"></td>
+                </tr>
+                <?php
+            } else {
+                ?>
+                <tr>
+                    <td colspan="6" align="center">No investments found.</td>
+                </tr>
+                <?php
             }
-        } else {
-            echo "<option value=''>No packages available</option>";
-        }
-        ?>
-    </select><br><br>
-
-    <label for="deposit_method">Select Cryptocurrency:</label><br>
-    <select name="deposit_method" id="deposit_method" required>
-        <option value="">--Select Crypto--</option>
-        <option value="BTC">Bitcoin (BTC)</option>
-        <option value="ETH">Ethereum (ETH)</option>
-        <option value="USDT">Tether (USDT)</option>
-    </select><br><br>
-
-    <label for="investment_amount">Investment Amount ($):</label><br>
-    <input type="number" name="investment_amount" id="investment_amount" min="0" step="0.01" required><br><br>
-
-    <label for="deposit_txid">Transaction ID (TXID):</label><br>
-    <input type="text" name="deposit_txid" id="deposit_txid" required><br><br>
-
-    <input type="submit" value="Submit Deposit">
-</form>
-</body>
-</html>
+            ?>
+        </table>
+    </div>
+</div>
+<?php include_once __DIR__ . '/partials/footer.php'; ?>
