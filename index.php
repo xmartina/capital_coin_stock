@@ -21,13 +21,16 @@ include_once __DIR__ . '/partials/header.php';
                             .bg-success-light{
                                 background-color: #eefdee;
                             }
+                            .bg-danger-light{
+                                background-color: #f8d5d5;
+                            }
                         </style>
                         <?php
                         if(isset($message)) {
                             echo "<p class='text-success rounded p-2 bg-success-light success'>" . htmlspecialchars($message) . "</p>";
                         }
                         if(isset($error)) {
-                            echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
+                            echo "<p class='text-danger rounded p-2 bg-danger-light error'>" . htmlspecialchars($error) . "</p>";
                         }
                         ?>
                         <p>Your Stock Withdrawable Balance: <strong>$<?= htmlspecialchars($user_balance) ?></strong>
