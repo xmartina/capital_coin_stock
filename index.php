@@ -22,7 +22,7 @@ include_once __DIR__ . '/partials/header.php';
                                 background-color: #eefdee;
                             }
                             .bg-danger-light{
-                                background-color: #f8d5d5;
+                                background-color: #f8f0f0;
                             }
                         </style>
                         <?php
