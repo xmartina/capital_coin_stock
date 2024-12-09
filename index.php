@@ -3,7 +3,6 @@ ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(0);
 
-
 $page_name = 'Stock Investment';
 include_once __DIR__ . '/include/config.php';
 include_once __DIR__ . '/investment_helper.php';
@@ -36,8 +35,7 @@ include_once __DIR__ . '/partials/header.php';
                         <p>Your Stock Withdrawable Balance: <strong>$<?= htmlspecialchars($user_balance) ?></strong>
                         </p>
                     </div>
-
-                    <form method="POST" action="">
+                    <form method="POST" action="deposit.php">
 
                         <table cellspacing="1" cellpadding="2" border="0" width="100%" class="tab">
                             <tbody>
@@ -87,7 +85,7 @@ include_once __DIR__ . '/partials/header.php';
                                 </tr>
                                 <tr>
                                     <td colspan="3" align="right">
-                                        <input type="submit" value="Invest">
+                                        <input type="submit" value="Proceed to Deposit">
                                     </td>
                                 </tr>
                             </tbody>
@@ -104,6 +102,8 @@ include_once __DIR__ . '/partials/header.php';
                             <th>Investment Amount ($)</th>
                             <th>Profit (%)</th>
                             <th>Profit Earned ($)</th>
+                            <th>Status</th>
+                            <th>Admin Comments</th>
                         </tr>
                         <?php
                         if($investments_result && mysqli_num_rows($investments_result) > 0) {
@@ -116,19 +116,22 @@ include_once __DIR__ . '/partials/header.php';
                                     <td align="right"><?php echo number_format($invest['amount'], 2); ?></td>
                                     <td align="right"><?php echo number_format($invest['profit_percentage'], 2); ?></td>
                                     <td align="right"><?php echo number_format($invest['profit'], 2); ?></td>
+                                    <td><?= htmlspecialchars(ucfirst($invest['status'])) ?></td>
+                                    <td><?= htmlspecialchars($invest['admin_comments']) ?></td>
                                 </tr>
                         <?php
                             }
                         ?>
                                 <tr>
-                                    <td colspan="3" align="right"><strong>Total Profit Earned:</strong></td>
+                                    <td colspan="4" align="right"><strong>Total Profit Earned:</strong></td>
                                     <td align="right"><strong><?php echo number_format($total, 2); ?></strong></td>
+                                    <td></td>
                                 </tr>
                         <?php
                         } else {
                         ?>
                                 <tr>
-                                    <td colspan="4" align="center">No investments found.</td>
+                                    <td colspan="6" align="center">No investments found.</td>
                                 </tr>
                         <?php
                         }

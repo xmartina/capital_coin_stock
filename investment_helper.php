@@ -70,12 +70,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
 $packages_sql = "SELECT * FROM packages";
 $packages_result = mysqli_query($stock_conn, $packages_sql);
 
-// Fetch user's investments from $stock_conn
+// Fetch user's investments with status 'approved' only
 $investments_sql = "SELECT packages.name, packages.profit_percentage, investments.amount, investments.profit
 FROM investments
 JOIN packages ON investments.package_id = packages.id
-WHERE investments.user_id = '$user_id'";
-$investments_result = mysqli_query($stock_conn, $investments_sql);
+WHERE investments.user_id = '$user_id' AND investments.status = 'approved'";
+
 
 // Fetch user balance from withdrawable_balance table
 $balance_sql = "SELECT balance FROM withdrawable_balance WHERE user_id='$user_id'";
