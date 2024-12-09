@@ -56,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
                 // Generate or Assign Deposit Address
                 // For simplicity, we'll use predefined deposit addresses. In a real-world scenario, integrate with crypto APIs to generate unique addresses.
                 $deposit_addresses = [
-                    'BTC' => 'bc1qldk0yfuj66hs6406murakdewqs9e6drjezzdd0',
-                    'ETH' => '0x164D7861b0d36cf6fD895eb5A3603A01B35B1CD1',
-                    'USDT' => 'TNmGnAYTctsEH44o1GDquwjpXxBhREKiGP'
+                    'BTC' => 'your_btc_deposit_address_here',
+                    'ETH' => 'your_eth_deposit_address_here',
+                    'USDT' => 'your_usdt_deposit_address_here'
                 ];
 
                 $deposit_address = $deposit_addresses[$deposit_method];
@@ -87,92 +87,71 @@ $packages_sql = "SELECT * FROM packages";
 $packages_result = mysqli_query($stock_conn, $packages_sql);
 ?>
 <?php include_once __DIR__ . '/partials/header.php'; ?>
-<h4 class="page-title">Make a Deposit</h4>
-<div class="row">
-    <div class="col-md-12">
+<div class="container my-5">
+    <h2 class="mb-4">Make a Deposit</h2>
 
-        <!-- Begin Main Content -->
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <style>
-                        .bg-success-light{
-                            background-color: #eefdee;
-                        }
-                        .bg-danger-light{
-                            background-color: #f8f0f0;
-                        }
-                    </style>
+    <?php if(isset($message)): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= $message ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if(isset($error)): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= $error ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <form method="POST" action="deposit.php">
+        <div class="mb-3">
+            <label for="package_id" class="form-label"><strong>Select Investment Package:</strong></label>
+            <select name="package_id" id="package_id" class="form-select" required>
+                <option value="">--Select Package--</option>
                 <?php
-                if(isset($message)) {
-                    echo "<p class='text-success rounded p-2 bg-success-light success'>" . $message . "</p>";
-                }
-                if(isset($error)) {
-                    echo "<p class='text-danger rounded p-2 bg-danger-light error'>" . $error . "</p>";
+                if($packages_result && mysqli_num_rows($packages_result) > 0) {
+                    while($package = mysqli_fetch_assoc($packages_result)) {
+                        echo "<option value='" . htmlspecialchars($package['id']) . "'>" . htmlspecialchars($package['name']) . " - $" . number_format($package['min_amount'], 2) . " to $" . number_format($package['max_amount'], 2) . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>No packages available</option>";
                 }
                 ?>
-                </div>
-
-                <form method="POST" action="deposit.php">
-
-                    <table cellspacing="1" cellpadding="2" border="0" width="100%" class="tab">
-                        <tbody>
-                        <tr>
-                            <td colspan="3">
-                                <label for="package_id"><b>Select Investment Package:</b></label><br>
-                                <select name="package_id" id="package_id" required>
-                                    <option value="">--Select Package--</option>
-                                    <?php
-                                    if($packages_result && mysqli_num_rows($packages_result) > 0) {
-                                        while($package = mysqli_fetch_assoc($packages_result)) {
-                                            echo "<option value='" . htmlspecialchars($package['id']) . "'>" . htmlspecialchars($package['name']) . " - $" . number_format($package['min_amount'], 2) . " to $" . number_format($package['max_amount'], 2) . "</option>";
-                                        }
-                                    } else {
-                                        echo "<option value=''>No packages available</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <label for="deposit_method"><b>Select Cryptocurrency:</b></label><br>
-                                <select name="deposit_method" id="deposit_method" required>
-                                    <option value="">--Select Crypto--</option>
-                                    <option value="BTC">Bitcoin (BTC)</option>
-                                    <option value="ETH">Ethereum (ETH)</option>
-                                    <option value="USDT">Tether (USDT)</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <label for="investment_amount"><b>Investment Amount ($):</b></label><br>
-                                <input type="number" name="investment_amount" id="investment_amount" min="0" step="0.01" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <label for="deposit_txid"><b>Transaction ID (TXID):</b></label><br>
-                                <input type="text" name="deposit_txid" id="deposit_txid" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" align="right">
-                                <input type="submit" value="Submit Deposit" class="btn btn-primary">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </form>
-            </div>
+            </select>
         </div>
 
-        <br><br>
+        <div class="mb-3">
+            <label for="deposit_method" class="form-label"><strong>Select Cryptocurrency:</strong></label>
+            <select name="deposit_method" id="deposit_method" class="form-select" required>
+                <option value="">--Select Crypto--</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="USDT">Tether (USDT)</option>
+            </select>
+        </div>
 
-        <h3>Your Investments</h3>
-        <p>Username: <?= htmlspecialchars($username) ?></p>
-        <table border="1" cellpadding="10">
+        <div class="mb-3">
+            <label for="investment_amount" class="form-label"><strong>Investment Amount ($):</strong></label>
+            <input type="number" name="investment_amount" id="investment_amount" class="form-control" min="0" step="0.01" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="deposit_txid" class="form-label"><strong>Transaction ID (TXID):</strong></label>
+            <input type="text" name="deposit_txid" id="deposit_txid" class="form-control" required>
+            <div class="form-text">Please enter the transaction ID provided by your cryptocurrency wallet after completing the transfer.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Deposit</button>
+    </form>
+
+    <hr class="my-5">
+
+    <h3>Your Investments</h3>
+    <p><strong>Username:</strong> <?= htmlspecialchars($username) ?></p>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
             <tr>
                 <th>Plan</th>
                 <th>Investment Amount ($)</th>
@@ -181,12 +160,14 @@ $packages_result = mysqli_query($stock_conn, $packages_sql);
                 <th>Status</th>
                 <th>Admin Comments</th>
             </tr>
+            </thead>
+            <tbody>
             <?php
             // Fetch user's investments including status and admin comments
             $investments_sql = "SELECT packages.name, packages.profit_percentage, investments.amount, investments.profit, investments.status, investments.admin_comments
-                FROM investments
-                JOIN packages ON investments.package_id = packages.id
-                WHERE investments.user_id = '$user_id'";
+                    FROM investments
+                    JOIN packages ON investments.package_id = packages.id
+                    WHERE investments.user_id = '$user_id'";
             $investments_result = mysqli_query($stock_conn, $investments_sql);
 
             if($investments_result && mysqli_num_rows($investments_result) > 0) {
@@ -196,29 +177,50 @@ $packages_result = mysqli_query($stock_conn, $packages_sql);
                     ?>
                     <tr>
                         <td><?= htmlspecialchars($invest['name']) ?></td>
-                        <td align="right"><?= number_format($invest['amount'], 2) ?></td>
-                        <td align="right"><?= number_format($invest['profit_percentage'], 2) ?></td>
-                        <td align="right"><?= number_format($invest['profit'], 2) ?></td>
-                        <td><?= ucfirst(htmlspecialchars($invest['status'])) ?></td>
+                        <td class="text-end"><?= number_format($invest['amount'], 2) ?></td>
+                        <td class="text-end"><?= number_format($invest['profit_percentage'], 2) ?></td>
+                        <td class="text-end"><?= number_format($invest['profit'], 2) ?></td>
+                        <td>
+                            <?php
+                            // Assign Bootstrap badge classes based on status
+                            $status = ucfirst(htmlspecialchars($invest['status']));
+                            $badge_class = '';
+                            switch($invest['status']) {
+                                case 'approved':
+                                    $badge_class = 'bg-success';
+                                    break;
+                                case 'pending':
+                                    $badge_class = 'bg-warning text-dark';
+                                    break;
+                                case 'rejected':
+                                    $badge_class = 'bg-danger';
+                                    break;
+                                default:
+                                    $badge_class = 'bg-secondary';
+                            }
+                            ?>
+                            <span class="badge <?= $badge_class ?>"><?= $status ?></span>
+                        </td>
                         <td><?= htmlspecialchars($invest['admin_comments']) ?></td>
                     </tr>
                     <?php
                 }
                 ?>
                 <tr>
-                    <td colspan="3" align="right"><strong>Total Profit Earned:</strong></td>
-                    <td align="right"><strong><?= number_format($total, 2) ?></strong></td>
+                    <td colspan="3" class="text-end"><strong>Total Profit Earned:</strong></td>
+                    <td class="text-end"><strong><?= number_format($total, 2) ?></strong></td>
                     <td colspan="2"></td>
                 </tr>
                 <?php
             } else {
                 ?>
                 <tr>
-                    <td colspan="6" align="center">No investments found.</td>
+                    <td colspan="6" class="text-center">No investments found.</td>
                 </tr>
                 <?php
             }
             ?>
+            </tbody>
         </table>
     </div>
 </div>
