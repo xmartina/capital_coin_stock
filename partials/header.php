@@ -7,13 +7,13 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="/new<?= $site_url ?>assets/css/ready.css">
-    <link rel="stylesheet" href="/new<?= $site_url ?>assets/css/demo.css">
+    <link rel="stylesheet" href="<?= $site_url ?>assets/css/ready.css">
+    <link rel="stylesheet" href="<?= $site_url ?>assets/css/demo.css">
 
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
 
     <link type="text/css" rel="stylesheet" charset="UTF-8" href="https://www.gstatic.com/_/translate_http/_/ss/k=translate_http.tr.69JJaQ5G5xA.L.W.O/d=0/rs=AN8SPfpC36MIoWPngdVwZ4RUzeJYZaC7rg/m=el_main_css"><script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-115538286-1"></script><script type="text/javascript" charset="UTF-8" src="https://translate.googleapis.com/_/translate_http/_/js/k=translate_http.tr.en_GB.c_zC7qUnTFY.O/d=1/exm=el_conf/ed=1/rs=AN8SPfoBlmfmYftMKBfrazMTdGZqwlOJOw/m=el_main"></script><link id="wabiCss" rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/yui/3.18.1/cssnormalize-context/cssnormalize-context-min.css" media="all">
-    <link rel="stylesheet" href="/new<?= $site_url ?>assets/css/custom.css">
+    <link rel="stylesheet" href="<?= $site_url ?>assets/css/custom.css">
     <style>
         .body-class{
             position: relative; min-height: 100%; top: 0;
