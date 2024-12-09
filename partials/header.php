@@ -1,7 +1,7 @@
 <html style="height: 100%;">
 <head>
     <!-- Fav Icon  -->
-    <link rel="shortcut icon" href="<?= $site_url ?>assets/images/logo/favicon.png">
+    <link rel="shortcut icon" href="<?= $stock_url ?>assets/images/logo/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Deposit and Investment Page | Admin</title>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
@@ -21,7 +21,8 @@
     </style>
     <!-- Fav Icon  -->
     <link rel="shortcut icon" href="<?= $site_url ?>assets/images/logo/favicon.png">
-    <link type="text/css" rel="stylesheet" charset="UTF-8" href="https://www.gstatic.com/_/translate_http/_/ss/k=translate_http.tr.26tY-h6gH9w.L.W.O/am=DAY/d=0/rs=AN8SPfrCcgxoBri2FVMQptvuOBiOsolgBw/m=el_main_css"><script type="text/javascript" charset="UTF-8" src="https://translate.googleapis.com/_/translate_http/_/js/k=translate_http.tr.en_GB.xaTVPpkBqPA.O/am=ACA/d=1/exm=el_conf/ed=1/rs=AN8SPfqoPObKIv4W0RXwipAV1lxx-XpKVg/m=el_main"></script><link rel="stylesheet" href="https://code.jivosite.com/css/9a2ff28/widget.css" class="jv-css"><link rel="stylesheet" type="text/css" href="https://code.jivosite.com/css/9a2ff28/omnichannelMenu.widget.css"></head>
+    <link type="text/css" rel="stylesheet" charset="UTF-8" href="https://www.gstatic.com/_/translate_http/_/ss/k=translate_http.tr.26tY-h6gH9w.L.W.O/am=DAY/d=0/rs=AN8SPfrCcgxoBri2FVMQptvuOBiOsolgBw/m=el_main_css"><script type="text/javascript" charset="UTF-8" src="https://translate.googleapis.com/_/translate_http/_/js/k=translate_http.tr.en_GB.xaTVPpkBqPA.O/am=ACA/d=1/exm=el_conf/ed=1/rs=AN8SPfqoPObKIv4W0RXwipAV1lxx-XpKVg/m=el_main"></script><link rel="stylesheet" href="https://code.jivosite.com/css/9a2ff28/widget.css" class="jv-css"><link rel="stylesheet" type="text/css" href="https://code.jivosite.com/css/9a2ff28/omnichannelMenu.widget.css">
+</head>
 
 <body class="body-class" style="position: relative; min-height: 100%; top: 0px;">
 
