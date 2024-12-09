@@ -13,32 +13,32 @@ $user_id = $user['id'];
 
 // Handle Package Investment
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
-$package_id = intval($_POST['package_id']);
-$investment_amount = floatval($_POST['investment_amount']);
+    $package_id = intval($_POST['package_id']);
+    $investment_amount = floatval($_POST['investment_amount']);
 
 // Fetch package details
-$package_sql = "SELECT * FROM packages WHERE id='$package_id'";
-$package_result = mysqli_query($stock_conn, $package_sql);
-if (mysqli_num_rows($package_result) == 1) {
-$package = mysqli_fetch_assoc($package_result);
+    $package_sql = "SELECT * FROM packages WHERE id='$package_id'";
+    $package_result = mysqli_query($stock_conn, $package_sql);
+    if (mysqli_num_rows($package_result) == 1) {
+        $package = mysqli_fetch_assoc($package_result);
 // Validate investment amount
-if ($investment_amount >= $package['min_amount'] && $investment_amount <= $package['max_amount']) {
+        if ($investment_amount >= $package['min_amount'] && $investment_amount <= $package['max_amount']) {
 // Calculate profit
-$profit = ($investment_amount * $package['profit_percentage']) / 100;
+            $profit = ($investment_amount * $package['profit_percentage']) / 100;
 
 // Insert into investments table (assuming investments table can handle package investments)
-$insert = "INSERT INTO investments (user_id, package_id, amount, profit) VALUES ('$user_id', '$package_id', '$investment_amount', '$profit')";
-if (mysqli_query($stock_conn, $insert)) {
-$message = "Investment successful! You will earn $$profit profit.";
-} else {
-$error = "Investment failed. Please try again.";
-}
-} else {
-$error = "Investment amount must be between $" . number_format($package['min_amount'], 2) . " and $" . number_format($package['max_amount'], 2) . ".";
-}
-} else {
-$error = "Invalid package selected.";
-}
+            $insert = "INSERT INTO investments (user_id, package_id, amount, profit) VALUES ('$user_id', '$package_id', '$investment_amount', '$profit')";
+            if (mysqli_query($stock_conn, $insert)) {
+                $message = "Investment successful! You will earn $$profit profit.";
+            } else {
+                $error = "Investment failed. Please try again.";
+            }
+        } else {
+            $error = "Investment amount must be between $" . number_format($package['min_amount'], 2) . " and $" . number_format($package['max_amount'], 2) . ".";
+        }
+    } else {
+        $error = "Invalid package selected.";
+    }
 }
 
 // Fetch all packages
