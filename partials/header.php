@@ -104,6 +104,7 @@
                                 transition:all 350ms linear !important;
                             }
                         </style>
+
                         <div class="in collapse show" id="collapseExample" aria-expanded="true" style="">
                             <ul class="nav">
                                 <li>
@@ -133,21 +134,23 @@
                             <span class="badge badge-count"></span>
                         </a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item ">
                         <a href="/depo/user/login.php">
                             <i class="la la-table"></i>
                             <p>Make Deposit</p>
                             <span class="badge badge-count"> </span>
                         </a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item ">
                         <a href="/?a=deposit">
                             <i class="la la-table"></i>
                             <p>Investments</p>
                             <span class="badge badge-count"> </span>
                         </a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item <?php
+                    $active_url = $_SERVER['REQUEST_URI'];
+                    if (strpos($active_url, 'stock_investment')){ echo 'active';} ?>">
                         <a href="/stock_investment">
                             <i class="la la-table"></i>
                             <p>Stock Investments</p>
