@@ -17,9 +17,14 @@ include_once __DIR__ . '/partials/header.php';
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
+                        <style>
+                            .bg-success-light{
+                                background-color: #d6f8d6;
+                            }
+                        </style>
                         <?php
                         if(isset($message)) {
-                            echo "<p class='success'>" . htmlspecialchars($message) . "</p>";
+                            echo "<p class='text-success rounded p-2 bg-success-light success'>" . htmlspecialchars($message) . "</p>";
                         }
                         if(isset($error)) {
                             echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
