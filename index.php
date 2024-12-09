@@ -16,14 +16,17 @@ include_once __DIR__ . '/partials/header.php';
             <!-- Begin Main Content -->
             <div class="card">
                 <div class="card-body">
-                    <?php
-                    if(isset($message)) {
-                        echo "<p class='success'>" . htmlspecialchars($message) . "</p>";
-                    }
-                    if(isset($error)) {
-                        echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
-                    }
-                    ?>
+                    <div class="d-flex justify-content-between">
+                        <?php
+                        if(isset($message)) {
+                            echo "<p class='success'>" . htmlspecialchars($message) . "</p>";
+                        }
+                        if(isset($error)) {
+                            echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
+                        }
+                        ?>
+                        <p>Your Withdrawable Balance: $<?= htmlspecialchars($user_balance) ?></p>
+                    </div>
 
                     <form method="POST" action="">
 

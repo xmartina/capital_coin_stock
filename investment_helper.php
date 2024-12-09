@@ -76,4 +76,17 @@ FROM investments
 JOIN packages ON investments.package_id = packages.id
 WHERE investments.user_id = '$user_id'";
 $investments_result = mysqli_query($stock_conn, $investments_sql);
+
+// Fetch user balance from withdrawable_balance table
+$balance_sql = "SELECT balance FROM withdrawable_balance WHERE user_id='$user_id'";
+$balance_result = mysqli_query($stock_conn, $balance_sql);
+
+if ($balance_result && mysqli_num_rows($balance_result) > 0) {
+    $balance_row = mysqli_fetch_assoc($balance_result);
+    $user_balance = $balance_row['balance'];
+} else {
+    // If no balance record exists, set balance to 0.00
+    $user_balance = "0.00";
+}
+
 ?>
