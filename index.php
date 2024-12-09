@@ -19,7 +19,7 @@ include_once __DIR__ . '/partials/header.php';
                     <div class="d-flex justify-content-between">
                         <style>
                             .bg-success-light{
-                                background-color: #d6f8d6;
+                                background-color: #eefdee;
                             }
                         </style>
                         <?php
