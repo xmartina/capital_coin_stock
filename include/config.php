@@ -8,14 +8,14 @@ $stock_url = $site_url.'stock_investment/';
 
 // dashboard.php
 
-//if (!isset($_SESSION['username'])) {
-//    header("Location: login.php");
-//    exit();
-//}
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Fetch user ID
 $username = $_SESSION['username'];
-$user_sql = "SELECT id FROM users WHERE username='$username'";
+$user_sql = "SELECT id FROM hm2_users WHERE username='$username'";
 $user_result = mysqli_query($conn, $user_sql);
 $user = mysqli_fetch_assoc($user_result);
 $user_id = $user['id'];

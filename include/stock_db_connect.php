@@ -2,9 +2,9 @@
 // config.php
 
 $servername = "localhost";
-$username = "your_db_username";
-$password = "your_db_password";
-$dbname = "stock_investment";
+$username = "multistream6_capital_coin_stock_investment";
+$password = "capital_coin_stock_investment";
+$dbname = "multistream6_capital_coin_stock_investment";
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
