@@ -56,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
                 // Generate or Assign Deposit Address
                 // For simplicity, we'll use predefined deposit addresses. In a real-world scenario, integrate with crypto APIs to generate unique addresses.
                 $deposit_addresses = [
-                    'BTC' => 'your_btc_deposit_address_here',
-                    'ETH' => 'your_eth_deposit_address_here',
-                    'USDT' => 'your_usdt_deposit_address_here'
+                    'BTC' => 'bc1qldk0yfuj66hs6406murakdewqs9e6drjezzdd0',
+                    'ETH' => '0x164D7861b0d36cf6fD895eb5A3603A01B35B1CD1',
+                    'USDT' => 'TNmGnAYTctsEH44o1GDquwjpXxBhREKiGP'
                 ];
 
                 $deposit_address = $deposit_addresses[$deposit_method];
@@ -94,14 +94,24 @@ $packages_result = mysqli_query($stock_conn, $packages_sql);
         <!-- Begin Main Content -->
         <div class="card">
             <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <style>
+                        .bg-success-light{
+                            background-color: #eefdee;
+                        }
+                        .bg-danger-light{
+                            background-color: #f8f0f0;
+                        }
+                    </style>
                 <?php
                 if(isset($message)) {
-                    echo "<p class='success'>" . $message . "</p>";
+                    echo "<p class='text-success rounded p-2 bg-success-light success'>" . $message . "</p>";
                 }
                 if(isset($error)) {
-                    echo "<p class='error'>" . $error . "</p>";
+                    echo "<p class='text-danger rounded p-2 bg-danger-light error'>" . $error . "</p>";
                 }
                 ?>
+                </div>
 
                 <form method="POST" action="deposit.php">
 
