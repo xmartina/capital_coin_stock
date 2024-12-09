@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         // Fetch user
         $sql = "SELECT * FROM hm2_users WHERE username='$username'";
-        $result = mysqli_query($conn, $sql);
+        $result = mysqli_query($front_conn, $sql);
         if (mysqli_num_rows($result) == 1) {
             $user = mysqli_fetch_assoc($result);
             $_SESSION['username'] = $username;
