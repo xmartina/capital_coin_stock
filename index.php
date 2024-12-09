@@ -25,7 +25,8 @@ include_once __DIR__ . '/partials/header.php';
                             echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
                         }
                         ?>
-                        <p>Your Withdrawable Balance: $<?= htmlspecialchars($user_balance) ?></p>
+                        <p>Your Stock Withdrawable Balance: <strong>$<?= htmlspecialchars($user_balance) ?></strong>
+                        </p>
                     </div>
 
                     <form method="POST" action="">
