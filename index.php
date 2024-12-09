@@ -15,7 +15,7 @@ include_once __DIR__ . '/partials/header.php';
                     <?php if(isset($error)) echo "<p class='error'>$error</p>"; ?>
 
                     <form method="POST" action="">
-                        <?=$username?>
+
                         <table cellspacing="1" cellpadding="2" border="0" width="100%" class="tab">
                             <tbody>
                             <tr>
@@ -61,6 +61,7 @@ include_once __DIR__ . '/partials/header.php';
                     <br><br>
 
                     <h3>Your Investments</h3>
+                    <?=$username?>
                     <table border="1">
                         <tr>
                             <th>Plan</th>
