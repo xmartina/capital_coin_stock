@@ -7,7 +7,7 @@
 // Fetch user ID
 $username = $_SESSION['username'];
 $user_sql = "SELECT id FROM hm2_users WHERE username='$username'";
-$user_result = mysqli_query($conn, $user_sql);
+$user_result = mysqli_query($front_conn, $user_sql);
 $user = mysqli_fetch_assoc($user_result);
 $user_id = $user['id'];
 
@@ -18,7 +18,7 @@ $investment_amount = floatval($_POST['investment_amount']);
 
 // Fetch package details
 $package_sql = "SELECT * FROM packages WHERE id='$package_id'";
-$package_result = mysqli_query($conn, $package_sql);
+$package_result = mysqli_query($stock_conn, $package_sql);
 if (mysqli_num_rows($package_result) == 1) {
 $package = mysqli_fetch_assoc($package_result);
 // Validate investment amount
@@ -28,7 +28,7 @@ $profit = ($investment_amount * $package['profit_percentage']) / 100;
 
 // Insert into investments table (assuming investments table can handle package investments)
 $insert = "INSERT INTO investments (user_id, package_id, amount, profit) VALUES ('$user_id', '$package_id', '$investment_amount', '$profit')";
-if (mysqli_query($conn, $insert)) {
+if (mysqli_query($stock_conn, $insert)) {
 $message = "Investment successful! You will earn $$profit profit.";
 } else {
 $error = "Investment failed. Please try again.";
@@ -43,12 +43,12 @@ $error = "Invalid package selected.";
 
 // Fetch all packages
 $packages_sql = "SELECT * FROM packages";
-$packages_result = mysqli_query($conn, $packages_sql);
+$packages_result = mysqli_query($stock_conn, $packages_sql);
 
 // Fetch user's investments
 $investments_sql = "SELECT packages.name, packages.profit_percentage, investments.amount, investments.profit
 FROM investments
 JOIN packages ON investments.package_id = packages.id
 WHERE investments.user_id = '$user_id'";
-$investments_result = mysqli_query($conn, $investments_sql);
+$investments_result = mysqli_query($stock_conn, $investments_sql);
 

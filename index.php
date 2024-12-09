@@ -4,7 +4,7 @@ include_once __DIR__ . '/include/config.php';
 include_once __DIR__ . '/investment_helper.php';
 include_once __DIR__ . '/partials/header.php';
 ?>
-    <h4 class="page-title">Make Deposit</h4>
+    <h4 class="page-title"><?= $page_name ?></h4>
     <div class="row">
         <div class="col-md-12">
 
