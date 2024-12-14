@@ -1,18 +1,15 @@
 <?php
 // admin.php
-ini_set('display_errors', 1);  // Show errors in the browser
-error_reporting(E_ALL);  
+
 session_start();
 require 'include/config.php';
 
 // Check if admin is logged in
-// Uncomment and modify the following lines based on your authentication logic
-/*
-if (!isset($_SESSION['username']) || $_SESSION['is_admin'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-*/
+// Ensure that admin authentication logic is active
+// if (!isset($_SESSION['username']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+//     header("Location: admin_login.php"); // Redirect to admin login page
+//     exit();
+// }
 
 // Initialize variables
 $message = '';
@@ -20,81 +17,60 @@ $error = '';
 
 // Handle Approval or Rejection
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['investment_id'], $_POST['action'])) {
+    // Validate and sanitize input
+    if (isset($_POST['investment_id']) && isset($_POST['action'])) {
         $investment_id = intval($_POST['investment_id']);
         $action = $_POST['action'];
         $admin_comments = mysqli_real_escape_string($stock_conn, $_POST['admin_comments']);
 
-        if ($action == 'approve' || $action == 'reject') {
-            $status = ($action == 'approve') ? 'approved' : 'rejected';
+        if ($action === 'approve') {
+            // Approve the investment
+            $update_sql = "UPDATE investments SET status='approved', admin_comments='$admin_comments' WHERE id='$investment_id' AND status='pending'";
+            if (mysqli_query($stock_conn, $update_sql)) {
+                if (mysqli_affected_rows($stock_conn) > 0) {
+                    $message = "Investment ID $investment_id approved successfully.";
 
-            // Prepare the UPDATE statement
-            $stmt = $stock_conn->prepare("UPDATE investments SET status = ?, admin_comments = ? WHERE id = ?");
-            if ($stmt) {
-                $stmt->bind_param("ssi", $status, $admin_comments, $investment_id);
-                if ($stmt->execute()) {
-                    $message = "Investment ID $investment_id " . (($action == 'approve') ? "approved" : "rejected") . " successfully.";
+                    // Fetch investment details to update withdrawable_balance
+                    $fetch_sql = "SELECT user_id, profit FROM investments WHERE id='$investment_id'";
+                    $fetch_result = mysqli_query($stock_conn, $fetch_sql);
+                    if ($fetch_result && mysqli_num_rows($fetch_result) == 1) {
+                        $investment = mysqli_fetch_assoc($fetch_result);
+                        $user_id = $investment['user_id'];
+                        $profit = $investment['profit'];
 
-                    if ($action == 'approve') {
-                        // Fetch investment details
-                        $fetch_stmt = $stock_conn->prepare("SELECT user_id, amount, profit FROM investments WHERE id = ?");
-                        if ($fetch_stmt) {
-                            $fetch_stmt->bind_param("i", $investment_id);
-                            $fetch_stmt->execute();
-                            $result = $fetch_stmt->get_result();
-                            if ($result && $result->num_rows == 1) {
-                                $investment = $result->fetch_assoc();
-                                $user_id = $investment['user_id'];
-                                $profit = $investment['profit'];
-
-                                // Update withdrawable_balance table
-                                $balance_stmt = $stock_conn->prepare("SELECT balance FROM withdrawable_balance WHERE user_id = ?");
-                                if ($balance_stmt) {
-                                    $balance_stmt->bind_param("i", $user_id);
-                                    $balance_stmt->execute();
-                                    $balance_result = $balance_stmt->get_result();
-                                    if ($balance_result && $balance_result->num_rows == 1) {
-                                        // Update existing balance
-                                        $update_balance_stmt = $stock_conn->prepare("UPDATE withdrawable_balance SET balance = balance + ? WHERE user_id = ?");
-                                        if ($update_balance_stmt) {
-                                            $update_balance_stmt->bind_param("di", $profit, $user_id);
-                                            $update_balance_stmt->execute();
-                                            $update_balance_stmt->close();
-                                        } else {
-                                            $error .= " Failed to prepare balance update statement: " . $stock_conn->error;
-                                        }
-                                    } else {
-                                        // Insert new balance record
-                                        $insert_balance_stmt = $stock_conn->prepare("INSERT INTO withdrawable_balance (user_id, balance) VALUES (?, ?)");
-                                        if ($insert_balance_stmt) {
-                                            $insert_balance_stmt->bind_param("id", $user_id, $profit);
-                                            $insert_balance_stmt->execute();
-                                            $insert_balance_stmt->close();
-                                        } else {
-                                            $error .= " Failed to prepare balance insert statement: " . $stock_conn->error;
-                                        }
-                                    }
-                                    $balance_stmt->close();
-                                } else {
-                                    $error .= " Failed to prepare balance selection statement: " . $stock_conn->error;
-                                }
-                            } else {
-                                $error .= " Investment details not found for ID $investment_id.";
-                            }
-                            $fetch_stmt->close();
+                        // Check if user already has a balance record
+                        $balance_check_sql = "SELECT balance FROM withdrawable_balance WHERE user_id='$user_id'";
+                        $balance_check_result = mysqli_query($stock_conn, $balance_check_sql);
+                        if (mysqli_num_rows($balance_check_result) == 1) {
+                            // Update existing balance
+                            $update_balance_sql = "UPDATE withdrawable_balance SET balance = balance + '$profit' WHERE user_id='$user_id'";
+                            mysqli_query($stock_conn, $update_balance_sql);
                         } else {
-                            $error .= " Failed to prepare investment fetch statement: " . $stock_conn->error;
+                            // Insert new balance record
+                            $insert_balance_sql = "INSERT INTO withdrawable_balance (user_id, balance) VALUES ('$user_id', '$profit')";
+                            mysqli_query($stock_conn, $insert_balance_sql);
                         }
                     }
                 } else {
-                    $error = "Failed to " . (($action == 'approve') ? "approve" : "reject") . " investment: " . $stmt->error;
+                    $error = "No pending investment found with ID $investment_id.";
                 }
-                $stmt->close();
             } else {
-                $error = "Failed to prepare statement: " . $stock_conn->error;
+                $error = "Failed to approve investment: " . mysqli_error($stock_conn);
+            }
+        } elseif ($action === 'reject') {
+            // Reject the investment
+            $update_sql = "UPDATE investments SET status='rejected', admin_comments='$admin_comments' WHERE id='$investment_id' AND status='pending'";
+            if (mysqli_query($stock_conn, $update_sql)) {
+                if (mysqli_affected_rows($stock_conn) > 0) {
+                    $message = "Investment ID $investment_id rejected successfully.";
+                } else {
+                    $error = "No pending investment found with ID $investment_id.";
+                }
+            } else {
+                $error = "Failed to reject investment: " . mysqli_error($stock_conn);
             }
         } else {
-            $error = "Invalid action.";
+            $error = "Invalid action specified.";
         }
     } else {
         $error = "Invalid form submission.";
@@ -102,110 +78,116 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Fetch all pending investments
-$pending_sql = "
-    SELECT 
-        investments.id, 
-        hm2_users.username, 
-        packages.name AS package_name, 
-        investments.amount, 
-        investments.profit, 
-        investments.deposit_method, 
-        investments.deposit_address, 
-        investments.deposit_txid, 
-        investments.investment_date
-    FROM investments
-    LEFT JOIN hm2_users ON investments.user_id = hm2_users.id
-    LEFT JOIN packages ON investments.package_id = packages.id
-    WHERE LOWER(investments.status) = 'pending'
-";
-
+$pending_sql = "SELECT id, user_id, package_id, amount, profit, deposit_method, deposit_address, deposit_txid, investment_date FROM investments WHERE status = 'pending'";
 $pending_result = mysqli_query($stock_conn, $pending_sql);
 
-if (!$pending_result) {
-    die("Error fetching pending investments: " . mysqli_error($stock_conn));
-}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Admin Panel - Approve Investments</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Basic styling for demonstration */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .success {
-            color: green;
-        }
-        .error {
-            color: red;
-        }
-        textarea {
-            resize: vertical;
-        }
-    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional: Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <h2>Admin Panel - Approve or Reject Investments</h2>
-    <?php
-    if (!empty($message)) {
-        echo "<p class='success'>" . htmlspecialchars($message) . "</p>";
-    }
-    if (!empty($error)) {
-        echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
-    }
-    ?>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Package</th>
-            <th>Amount ($)</th>
-            <th>Profit ($)</th>
-            <th>Deposit Method</th>
-            <th>Deposit Address</th>
-            <th>Deposit TXID</th>
-            <th>Investment Date</th>
-            <th>Actions</th>
-        </tr>
-        <?php
-        if ($pending_result && mysqli_num_rows($pending_result) > 0) {
-            while ($investment = mysqli_fetch_assoc($pending_result)) {
-                ?>
-                <tr>
-                    <td><?= htmlspecialchars($investment['id']) ?></td>
-                    <td><?= htmlspecialchars($investment['username'] ?? 'N/A') ?></td>
-                    <td><?= htmlspecialchars($investment['package_name'] ?? 'N/A') ?></td>
-                    <td align="right"><?= number_format($investment['amount'], 2) ?></td>
-                    <td align="right"><?= number_format($investment['profit'], 2) ?></td>
-                    <td><?= htmlspecialchars($investment['deposit_method']) ?></td>
-                    <td><?= htmlspecialchars($investment['deposit_address']) ?></td>
-                    <td><?= htmlspecialchars($investment['deposit_txid']) ?></td>
-                    <td><?= htmlspecialchars($investment['investment_date']) ?></td>
-                    <td>
-                        <form method="POST" action="admin.php">
-                            <input type="hidden" name="investment_id" value="<?= htmlspecialchars($investment['id']) ?>">
-                            <textarea name="admin_comments" placeholder="Comments (optional)" rows="2" cols="20"></textarea><br>
-                            <button type="submit" name="action" value="approve">Approve</button>
-                            <button type="submit" name="action" value="reject">Reject</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php
-            }
-        } else {
-            echo "<tr><td colspan='10'>No pending investments.</td></tr>";
-        }
-        ?>
-    </table>
+    <?php include_once __DIR__ . '/partials/header.php'; ?> <!-- Ensure header includes Bootstrap JS if needed -->
+    <div class="container my-5">
+        <h2 class="mb-4">Admin Panel - Approve or Reject Investments</h2>
+
+        <!-- Display Messages -->
+        <?php if(isset($message)): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($message) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if(isset($error)): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($error) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <!-- Pending Investments Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Package</th>
+                        <th>Amount ($)</th>
+                        <th>Profit ($)</th>
+                        <th>Deposit Method</th>
+                        <th>Deposit Address</th>
+                        <th>Deposit TXID</th>
+                        <th>Investment Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if($pending_result && mysqli_num_rows($pending_result) > 0) {
+                        while($investment = mysqli_fetch_assoc($pending_result)) {
+                            // Fetch username from hm2_users using front_conn
+                            $user_id = $investment['user_id'];
+                            $user_sql = "SELECT username FROM hm2_users WHERE id='$user_id' LIMIT 1";
+                            $user_result = mysqli_query($front_conn, $user_sql);
+                            if($user_result && mysqli_num_rows($user_result) == 1) {
+                                $user = mysqli_fetch_assoc($user_result);
+                                $username = $user['username'];
+                            } else {
+                                $username = "Unknown";
+                            }
+
+                            // Fetch package name from packages table using stock_conn
+                            $package_id = $investment['package_id'];
+                            $package_sql = "SELECT name FROM packages WHERE id='$package_id' LIMIT 1";
+                            $package_result = mysqli_query($stock_conn, $package_sql);
+                            if($package_result && mysqli_num_rows($package_result) == 1) {
+                                $package = mysqli_fetch_assoc($package_result);
+                                $package_name = $package['name'];
+                            } else {
+                                $package_name = "Unknown";
+                            }
+
+                            ?>
+                            <tr>
+                                <td><?= htmlspecialchars($investment['id']) ?></td>
+                                <td><?= htmlspecialchars($username) ?></td>
+                                <td><?= htmlspecialchars($package_name) ?></td>
+                                <td class="text-end"><?= number_format($investment['amount'], 2) ?></td>
+                                <td class="text-end"><?= number_format($investment['profit'], 2) ?></td>
+                                <td><?= htmlspecialchars($investment['deposit_method']) ?></td>
+                                <td><?= htmlspecialchars($investment['deposit_address']) ?></td>
+                                <td><?= htmlspecialchars($investment['deposit_txid']) ?></td>
+                                <td><?= htmlspecialchars($investment['investment_date']) ?></td>
+                                <td>
+                                    <form method="POST" action="admin.php">
+                                        <input type="hidden" name="investment_id" value="<?= htmlspecialchars($investment['id']) ?>">
+                                        <div class="mb-2">
+                                            <textarea name="admin_comments" class="form-control" placeholder="Comments (optional)" rows="2"></textarea>
+                                        </div>
+                                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                                        <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                    } else {
+                        echo "<tr><td colspan='10' class='text-center'>No pending investments.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php include_once __DIR__ . '/partials/footer.php'; ?>
+    <!-- Bootstrap JS Bundle (Includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
