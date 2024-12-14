@@ -31,51 +31,8 @@
 </head>
 
 <body class="body-class" style="position: relative; min-height: 100%; top: 0px;">
-<?php if (strpos($_SERVER['REQUEST_URI'],'admin_panel')) { ?>
-    <div class="main-header">
-        <div class="logo-header">
-            <a class="navbar-brand page-scroll sticky-logo" href="/">
-                <img src="<?= $site_url ?>assets/images/logo/logo.png" class="site-logo" alt="">
-            </a>
-            <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <button class="topbar-toggler more"><i class="la la-ellipsis-v"></i></button>
-        </div>
-        <nav class="navbar navbar-header navbar-expand-lg">
-            <div class="container-fluid">
-
-                <h4> <?=$page_name?></h4>
-                <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
 
 
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="../user-avatar.png" alt="user-img" width="36" class="img-circle"><span></span> </a>
-                        <ul class="dropdown-menu dropdown-user">
-                            <li>
-                                <div class="user-box">
-                                    <div class="u-img"><img src="../user-avatar.png" alt="user"></div>
-                                    <div class="u-text">
-                                        <h4>fad</h4>
-                                        <p class="text-muted"><?=$user_email?></p>
-                                        <a href="/?a=edit_account" class="btn btn-rounded btn-danger btn-sm">View Profile</a></div>
-                                </div>
-                            </li>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="?a=edit_account"><i class="ti-user"></i> My Profile</a>
-                            <a class="dropdown-item" href="/?a=earnings">MY transactions</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/?a=logout"><i class="fa fa-power-off"></i> Logout</a>
-                        </ul>
-                        <!-- /.dropdown-user -->
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-<?php } ?>
-<?php
-        if (!strpos($_SERVER['REQUEST_URI'],'admin_panel')) { ?>
 <div class="wrapper">
     <div class="main-header">
         <div class="logo-header">
@@ -118,6 +75,8 @@
             </div>
         </nav>
     </div>
+    <?php
+        if (!strpos($_SERVER['REQUEST_URI'],'admin_panel')) { ?>
     <div class="sidebar">
         <div class="scroll-wrapper scrollbar-inner sidebar-wrapper" style="position: relative;"><div class="scrollbar-inner sidebar-wrapper scroll-content scroll-scrollx_visible scroll-scrolly_visible" style="height: auto; margin-bottom: 0px; margin-right: 0px; max-height: 800px;">
                 <div class="user">
@@ -231,7 +190,7 @@
                 </ul>
             </div><div class="scroll-element scroll-x scroll-scrollx_visible scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="width: 241px; left: 0px;"></div></div></div><div class="scroll-element scroll-y scroll-scrollx_visible scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="height: 660px; top: 0px;"></div></div></div></div>
     </div>
-<?php } ?>
+<?php }
     <div class="main-panel">
         <div class="content">
             <div class="container-fluid">
