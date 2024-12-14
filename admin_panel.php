@@ -92,7 +92,10 @@ $page_name = 'Admin Approve Deposit';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <?php include_once __DIR__ . '/partials/header.php'; ?> <!-- Ensure header includes Bootstrap JS if needed -->
+    <?php 
+    // include_once __DIR__ . '/partials/header.php';
+    ?> 
+    <!-- Ensure header includes Bootstrap JS if needed -->
     <div class="container my-5">
         <h2 class="mb-4">Admin Panel - Approve or Reject Investments</h2>
 
@@ -186,8 +189,10 @@ $page_name = 'Admin Approve Deposit';
             </table>
         </div>
     </div>
-    <?php include_once __DIR__ . '/partials/footer.php'; ?>
+    <?php 
+    // include_once __DIR__ . '/partials/footer.php'; 
+    ?>
     <!-- Bootstrap JS Bundle (Includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 </body>
 </html>
