@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // Fetch all pending investments
 $pending_sql = "SELECT id, user_id, package_id, amount, profit, deposit_method, deposit_address, deposit_txid, investment_date FROM investments WHERE status = 'pending'";
 $pending_result = mysqli_query($stock_conn, $pending_sql);
-
+$page_name = 'Admin Approve Deposit';
 ?>
 <!DOCTYPE html>
 <html>

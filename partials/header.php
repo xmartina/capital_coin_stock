@@ -47,7 +47,7 @@
         <nav class="navbar navbar-header navbar-expand-lg">
             <div class="container-fluid">
 
-                <h4> DASHBOARD AREA</h4>
+                <h4> <?=$page_name?></h4>
                 <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
 
 
