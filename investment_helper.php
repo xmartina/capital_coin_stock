@@ -51,9 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
             $profit = ($investment_amount * $package['profit_percentage']) / 100;
 
             // Insert into investments table using $stock_conn
-            $insert = "INSERT INTO investments (user_id, package_id, amount, profit) VALUES ('$user_id', '$package_id', '$investment_amount', '$profit')";
+            // Now including 'status' and 'admin_comments'
+            $insert = "INSERT INTO investments (user_id, package_id, amount, profit, status, admin_comments) VALUES ('$user_id', '$package_id', '$investment_amount', '$profit', 'pending', '')";
             if (mysqli_query($stock_conn, $insert)) {
-                $message = "Investment successful! You will earn $$profit profit.";
+                $message = "Investment successful! You will earn $$profit profit. Your investment is pending approval.";
             } else {
                 // Display detailed MySQL error
                 $error = "Investment failed: " . mysqli_error($stock_conn);
@@ -70,12 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['package_id'])) {
 $packages_sql = "SELECT * FROM packages";
 $packages_result = mysqli_query($stock_conn, $packages_sql);
 
-// Fetch user's investments with status 'approved' only
-$investments_sql = "SELECT packages.name, packages.profit_percentage, investments.amount, investments.profit
+// Fetch user's investments including status and admin comments
+$investments_sql = "SELECT packages.name, packages.profit_percentage, investments.amount, investments.profit, investments.status, investments.admin_comments
 FROM investments
 JOIN packages ON investments.package_id = packages.id
-WHERE investments.user_id = '$user_id' AND investments.status = 'approved'";
-
+WHERE investments.user_id = '$user_id'";
+$investments_result = mysqli_query($stock_conn, $investments_sql);
 
 // Fetch user balance from withdrawable_balance table
 $balance_sql = "SELECT balance FROM withdrawable_balance WHERE user_id='$user_id'";
@@ -88,5 +89,4 @@ if ($balance_result && mysqli_num_rows($balance_result) > 0) {
     // If no balance record exists, set balance to 0.00
     $user_balance = "0.00";
 }
-
 ?>
