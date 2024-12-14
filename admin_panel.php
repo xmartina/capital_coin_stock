@@ -1,6 +1,7 @@
 <?php
 // admin.php
-
+ini_set('display_errors', 1);  // Show errors in the browser
+error_reporting(E_ALL);  
 session_start();
 require 'include/config.php';
 
