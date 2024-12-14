@@ -75,6 +75,8 @@
             </div>
         </nav>
     </div>
+    <?php
+        if (!strpos($_SERVER['REQUEST_URI'],'admin_panel')) { ?>
     <div class="sidebar">
         <div class="scroll-wrapper scrollbar-inner sidebar-wrapper" style="position: relative;"><div class="scrollbar-inner sidebar-wrapper scroll-content scroll-scrollx_visible scroll-scrolly_visible" style="height: auto; margin-bottom: 0px; margin-right: 0px; max-height: 800px;">
                 <div class="user">
@@ -188,7 +190,7 @@
                 </ul>
             </div><div class="scroll-element scroll-x scroll-scrollx_visible scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="width: 241px; left: 0px;"></div></div></div><div class="scroll-element scroll-y scroll-scrollx_visible scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="height: 660px; top: 0px;"></div></div></div></div>
     </div>
-
+<?php } ?>
     <div class="main-panel">
         <div class="content">
             <div class="container-fluid">
