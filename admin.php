@@ -7,10 +7,11 @@ require 'include/config.php';
 // Check if admin is logged in
 // Assume you have a way to verify admin status, e.g., $_SESSION['is_admin']
 // Replace with your actual admin authentication logic
-if (!isset($_SESSION['username']) || $_SESSION['is_admin'] !== true) {
-    header("Location: login.php");
-    exit();
-}
+
+// if (!isset($_SESSION['username']) || $_SESSION['is_admin'] !== true) {
+//     header("Location: login.php");
+//     exit();
+// }
 
 // Initialize variables
 $message = '';
