@@ -190,7 +190,7 @@
                 </ul>
             </div><div class="scroll-element scroll-x scroll-scrollx_visible scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="width: 241px; left: 0px;"></div></div></div><div class="scroll-element scroll-y scroll-scrollx_visible scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="height: 660px; top: 0px;"></div></div></div></div>
     </div>
-<?php }
+<?php } ?>
     <div class="main-panel">
         <div class="content">
             <div class="container-fluid">
