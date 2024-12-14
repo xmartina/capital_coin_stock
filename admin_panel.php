@@ -166,7 +166,7 @@ $pending_result = mysqli_query($stock_conn, $pending_sql);
                                 <td><?= htmlspecialchars($investment['deposit_txid']) ?></td>
                                 <td><?= htmlspecialchars($investment['investment_date']) ?></td>
                                 <td>
-                                    <form method="POST" action="admin.php">
+                                    <form method="POST" action="admin_panel.php">
                                         <input type="hidden" name="investment_id" value="<?= htmlspecialchars($investment['id']) ?>">
                                         <div class="mb-2">
                                             <textarea name="admin_comments" class="form-control" placeholder="Comments (optional)" rows="2"></textarea>
