@@ -32,7 +32,7 @@ include_once __DIR__ . '/partials/header.php';
                             echo "<p class='text-danger rounded p-2 bg-danger-light error'>" . htmlspecialchars($error) . "</p>";
                         }
                         ?>
-                        <p>Your Stock Withdrawable Balance: <strong>$<?= htmlspecialchars($user_balance) ?></strong>
+                        <p>Your Stock Withdrawable Balance: <strong>$<?= htmlspecialchars(number_format($user_balance),2) ?></strong>
                         </p>
                     </div>
                     <form method="POST" action="deposit.php">
