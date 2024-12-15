@@ -123,18 +123,36 @@ $page_name = 'Make Stock Deposit';
         </div>
 
         <div class="mb-3">
-            <label for="deposit_method" class="form-label"><strong>Select Cryptocurrency:</strong></label>
-            <select name="deposit_method" id="deposit_method" class="form-select" required>
-                <option value="">--Select Crypto--</option>
-                <option value="BTC">Bitcoin (BTC)</option>
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="USDT">Tether (USDT)</option>
-            </select>
-        </div>
+                <label for="deposit_method" class="form-label"><strong>Select Cryptocurrency:</strong></label>
+                <select name="deposit_method" id="deposit_method" class="form-select" required>
+                    <option value="">--Select Crypto--</option>
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                    <option value="USDT">Tether (USDT)</option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label for="investment_amount" class="form-label"><strong>Investment Amount ($):</strong></label>
-            <input type="number" name="investment_amount" id="investment_amount" class="form-control" min="0" step="0.01" required>
+            <!-- Investment Amount -->
+            <div class="mb-3">
+                <label for="investment_amount" class="form-label"><strong>Investment Amount ($):</strong></label>
+                <input type="number" name="investment_amount" id="investment_amount" class="form-control" min="0" step="0.01" required>
+            </div>
+
+            <!-- Select Wallet Address -->
+            <div class="mb-3" id="wallet_address_container" style="display: none;">
+                <label for="wallet_address" class="form-label"><strong>Select Wallet Address:</strong></label>
+                <select name="wallet_address" id="wallet_address" class="form-select" required>
+                    <!-- Options will be populated based on selected cryptocurrency -->
+                </select>
+            </div>
+
+            <!-- Payment Instructions -->
+        <div id="payment_instructions" style="display: none;">
+            <h4>Payment Instructions</h4>
+            <p><strong>Cryptocurrency:</strong> <span id="selected_crypto"></span></p>
+            <p><strong>Network:</strong> <span id="selected_network"></span></p>
+            <p><strong>Wallet Address:</strong> <span id="selected_address"></span></p>
+            <p>Please send the exact amount to the above wallet address. Ensure that you are using the correct network to avoid loss of funds.</p>
         </div>
 
         <div class="mb-3">
@@ -225,4 +243,110 @@ $page_name = 'Make Stock Deposit';
         </table>
     </div>
 </div>
+
+<script>
+        // Define wallet addresses with their corresponding networks
+        const walletData = {
+            'BTC': [
+                {
+                    address: 'bc1qldk0yfuj66hs6406murakdewqs9e6drjezzdd0',
+                    network: 'Bitcoin'
+                }
+                // Add more BTC addresses here if needed
+            ],
+            'ETH': [
+                {
+                    address: '0x164D7861b0d36cf6fD895eb5A3603A01B35B1CD1',
+                    network: 'Ethereum'
+                }
+                // Add more ETH addresses here if needed
+            ],
+            'USDT': [
+                {
+                    address: 'TNmGnAYTctsEH44o1GDquwjpXxBhREKiGP',
+                    network: 'TRC20'
+                }
+                // Add more USDT addresses here if needed
+            ]
+        };
+
+        // Get references to DOM elements
+        const depositMethod = document.getElementById('deposit_method');
+        const walletAddressContainer = document.getElementById('wallet_address_container');
+        const walletAddressSelect = document.getElementById('wallet_address');
+        const paymentInstructions = document.getElementById('payment_instructions');
+        const selectedCrypto = document.getElementById('selected_crypto');
+        const selectedNetwork = document.getElementById('selected_network');
+        const selectedAddress = document.getElementById('selected_address');
+
+        // Handle cryptocurrency selection change
+        depositMethod.addEventListener('change', function() {
+            const selectedCryptoValue = this.value;
+
+            // Clear previous wallet addresses
+            walletAddressSelect.innerHTML = '';
+
+            if (selectedCryptoValue && walletData[selectedCryptoValue]) {
+                // Populate wallet addresses based on selected cryptocurrency
+                walletData[selectedCryptoValue].forEach((wallet, index) => {
+                    const option = document.createElement('option');
+                    option.value = index; // Use index as value to reference the wallet
+                    option.textContent = `${wallet.address} (${wallet.network})`;
+                    walletAddressSelect.appendChild(option);
+                });
+
+                // Show the wallet address container
+                walletAddressContainer.style.display = 'block';
+
+                // Optionally, select the first wallet address by default
+                walletAddressSelect.selectedIndex = 0;
+
+                // Display the payment instructions for the first wallet
+                displayPaymentInstructions(selectedCryptoValue, walletData[selectedCryptoValue][0]);
+            } else {
+                // Hide the wallet address container if no crypto is selected
+                walletAddressContainer.style.display = 'none';
+                paymentInstructions.style.display = 'none';
+            }
+        });
+
+        // Handle wallet address selection change
+        walletAddressSelect.addEventListener('change', function() {
+            const crypto = depositMethod.value;
+            const walletIndex = this.value;
+
+            if (crypto && walletData[crypto] && walletData[crypto][walletIndex]) {
+                displayPaymentInstructions(crypto, walletData[crypto][walletIndex]);
+            }
+        });
+
+        // Function to display payment instructions
+        function displayPaymentInstructions(crypto, wallet) {
+            selectedCrypto.textContent = crypto;
+            selectedNetwork.textContent = wallet.network;
+            selectedAddress.textContent = wallet.address;
+            paymentInstructions.style.display = 'block';
+        }
+
+        // Optional: Handle form submission
+        document.getElementById('payment_form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent actual form submission
+
+            // Retrieve form values
+            const crypto = depositMethod.value;
+            const amount = document.getElementById('investment_amount').value;
+            const walletIndex = walletAddressSelect.value;
+            const wallet = walletData[crypto][walletIndex];
+
+            // Perform validation or send data to the server as needed
+            // For demonstration, we'll just log the details and show an alert
+            console.log(`Crypto: ${crypto}`);
+            console.log(`Amount: $${amount}`);
+            console.log(`Wallet Address: ${wallet.address}`);
+            console.log(`Network: ${wallet.network}`);
+
+            alert('Payment details submitted successfully!');
+        });
+    </script>
+
 <?php include_once __DIR__ . '/partials/footer.php'; ?>
